@@ -2,21 +2,15 @@
 
 ## 项目概述
 
-这是一个基于ROS2和BehaviorTree.CPP开发的哨兵机器人行为树系统。该系统实现了智能巡逻、血量管理和自动补给等功能。
+这是一个基于ROS2和BehaviorTree.CPP开发的哨兵机器人行为树系统。
 
 ## 主要特性
 
-### 🎯 核心功能
+### 🎯 目前的功能
 - **智能巡逻**：机器人会在多个预设点之间随机巡逻
 - **血量监控**：实时监控机器人血量状态
 - **自动补给**：血量低于阈值时自动前往补给点
 - **行为树架构**：基于BehaviorTree.CPP的可配置行为树
-
-### 🔧 技术特性
-- **ROS2集成**：使用ROS2导航和通信系统
-- **YAML配置**：所有参数通过YAML文件配置
-- **XML行为树**：行为树结构通过XML定义
-- **测试模式**：支持无导航服务的测试运行
 
 ## 项目结构
 
@@ -103,18 +97,17 @@ source install/setup.bash
 ### 基本运行
 ```bash
 # 运行行为树系统
-ros2 run sentry_bt sentry_bt
+ros2 launch bringup launch.py
 ```
 
 ### 完整系统运行
 ```bash
-# 终端1：启动导航系统（如果有地图和导航配置）
-ros2 launch nav2_bringup navigation_launch.py map:=/path/to/map.yaml
+# 终端1：启动导航系统
 
 # 终端2：运行哨兵行为树
-ros2 run sentry_bt sentry_bt
+ros2 launch bringup launch.py
 
-# 终端3：发布血量数据（可选，用于测试）
+# 终端3：发布血量数据（用于测试）
 ros2 topic pub /sentry_blood std_msgs/msg/Int32 "data: 80" --rate 1
 ```
 
@@ -167,7 +160,7 @@ supply_point:
 
 ### 血量阈值
 ```yaml
-blood_threshold: 50  # 0-100之间的整数
+blood_threshold: 50
 ```
 
 ## ROS2接口
@@ -183,14 +176,6 @@ blood_threshold: 50  # 0-100之间的整数
 
 ## 监控和调试
 
-### 日志输出
-系统提供详细的运行日志：
-```
-[INFO] [sentry_bt_node]: 已加载 4 个巡逻点
-[INFO] [sentry_bt_node]: 已设置补给点: x=0.00 y=0.00
-[INFO] [sentry_bt_node]: [Patrol]: 前往巡逻点 1/4
-[INFO] [sentry_bt_node]: [IsBloodLow]: 血量正常 (当前: 80, 阈值: 50)
-```
 
 ### 状态监控
 ```bash
@@ -201,62 +186,10 @@ ros2 topic echo /sentry_blood
 ros2 topic echo /navigate_to_pose/_action/feedback
 ```
 
-## 功能验证
-
-### 基本功能测试
-1. **启动系统**：确认无错误启动
-2. **巡逻测试**：观察日志中的巡逻点切换
-3. **血量测试**：发布不同血量值，观察行为变化
-
-### 集成测试
-1. **导航集成**：与nav2系统集成测试
-2. **传感器集成**：血量传感器数据接入测试
-3. **异常处理**：网络断开、服务重启等场景测试
-
-## 已知问题和限制
-
-### 当前限制
-- 需要ROS2 Humble或更高版本
-- 依赖nav2导航系统（测试模式除外）
-- 血量数据需要外部传感器提供
-
-### 已知问题
-- 测试模式下为模拟行为，不执行实际导航
-- 巡逻点切换为随机选择，可能不够智能
-
-## 更新日志
-
-### v1.0.0 (当前版本)
-- ✅ 基础巡逻功能实现
-- ✅ 血量监控和自动补给
-- ✅ YAML配置支持
-- ✅ 测试模式支持
-- ✅ ROS2 Humble兼容
-
-## 技术支持
-
-### 常见问题
-**Q: 系统无法启动？**
-A: 检查ROS2环境是否正确配置，nav2是否安装。
-
-**Q: 为什么不执行补给动作？**
-A: 检查血量阈值设置，确认血量数据正确发布。
-
-**Q: 如何添加更多巡逻点？**
-A: 编辑 `config/config.yaml` 文件，在 `patrol_points` 下添加坐标。
-
-### 获取帮助
-- **问题反馈**：在GitHub Issues中提交问题
-- **功能请求**：通过Pull Request贡献代码
-- **文档改进**：欢迎提交文档改进建议
-
 ## 许可证
 
 本项目采用 MIT 许可证 - 详见 [LICENSE](LICENSE) 文件
 
-## 贡献者
-
-- **IncrFunc** - 项目创建者和主要开发者
 
 ## 致谢
 
